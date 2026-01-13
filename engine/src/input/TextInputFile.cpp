@@ -23,6 +23,19 @@ TextInputField::TextInputField(Renderer& ren, const std::string& fontPath,
     }
 }
 
+TextInputField::~TextInputField()
+{
+    // Clean up resources
+    if (isActive)
+    {
+        SDL_Window* window = SDL_GetKeyboardFocus();
+        if (window)
+        {
+            SDL_StopTextInput(window);
+        }
+    }
+}
+
 void TextInputField::setActive(bool active)
 {
     isActive = active;

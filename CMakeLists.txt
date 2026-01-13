@@ -48,6 +48,9 @@ set(ALL_HEADERS ${ENGINE_HEADERS} ${GAME_HEADERS})
 # Create executable
 add_executable(${PROJECT_NAME} ${ALL_SOURCES} ${ALL_HEADERS})
 
+# Disable SDL3 main redefinition
+target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_MAIN_HANDLED)
+
 # Include directories
 target_include_directories(${PROJECT_NAME} 
     PRIVATE 
@@ -67,6 +70,13 @@ target_link_libraries(${PROJECT_NAME}
         SDL3_image::SDL3_image
         SDL3_ttf::SDL3_ttf
 )
+
+# Set compiler flags to use main instead of WinMain
+if(WIN32 AND NOT MSVC)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        LINK_FLAGS "-Wl,-subsystem,windows"
+    )
+endif()
 
 # Platform-specific settings
 if(WIN32)
